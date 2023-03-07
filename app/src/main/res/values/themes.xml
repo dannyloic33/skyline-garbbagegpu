@@ -43,6 +43,7 @@
         <item name="preferenceFragmentCompatStyle">@style/App.PreferenceFragment.Material</item>
         <!-- Override the default switch preference style to use the MD3 switch -->
         <item name="switchPreferenceCompatStyle">@style/App.Preference.SwitchPreferenceCompat.Material3</item>
+        <item name="preferenceStyle">@style/Preference.Material</item>
     </style>
 
     <style name="AppTheme" parent="BaseAppTheme">
