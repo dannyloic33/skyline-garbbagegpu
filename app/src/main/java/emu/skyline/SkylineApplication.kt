@@ -9,6 +9,7 @@ import android.app.Application
 import android.content.Context
 import dagger.hilt.android.HiltAndroidApp
 import emu.skyline.di.getSettings
+import emu.skyline.utils.DynamicColorsActivityLifecycleCallbacks
 import java.io.File
 
 /**
@@ -39,5 +40,7 @@ class SkylineApplication : Application() {
         val publicAppFilesPath = applicationContext.getPublicFilesDir().canonicalPath
         File("$publicAppFilesPath/logs/").mkdirs()
         initializeLog("$publicAppFilesPath/", getSettings().logLevel)
+
+        registerActivityLifecycleCallbacks(DynamicColorsActivityLifecycleCallbacks())
     }
 }

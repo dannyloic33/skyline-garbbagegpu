@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="ColorAppTheme" parent="Theme.Material3.Light.NoActionBar">
+    <style name="BaseAppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">?android:attr/colorBackground</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="chipChoiceStyle">@style/ChipChoice</item>
+
+        <!-- Workaround for AndroidX PreferenceScreen since it doesn't use MaterialAlertDialogs -->
+        <item name="alertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+        <!-- Workaround for AndroidX PreferenceScreen since it uses colorAccent as categories text color -->
+        <item name="colorAccent">?attr/colorPrimary</item>
+        <!-- Override the default divider used in PreferenceScreen -->
+        <item name="preferenceFragmentCompatStyle">@style/App.PreferenceFragment.Material</item>
+        <!-- Override the default switch preference style to use the MD3 switch -->
+        <item name="switchPreferenceCompatStyle">@style/App.Preference.SwitchPreferenceCompat.Material3</item>
+        <item name="preferenceStyle">@style/Preference.Material</item>
+    </style>
+
+    <style name="AppTheme" parent="BaseAppTheme">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+    <style name="AppTheme.Overlay" parent="ThemeOverlay.Material3.DynamicColors.Light">
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
@@ -28,26 +49,5 @@
         <item name="colorOnSurfaceInverse">@color/md_theme_light_inverseOnSurface</item>
         <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary</item>
-    </style>
-
-    <style name="BaseAppTheme" parent="ColorAppTheme">
-        <item name="android:statusBarColor">?android:attr/colorBackground</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="chipChoiceStyle">@style/ChipChoice</item>
-
-        <!-- Workaround for AndroidX PreferenceScreen since it doesn't use MaterialAlertDialogs -->
-        <item name="alertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <!-- Workaround for AndroidX PreferenceScreen since it uses colorAccent as categories text color -->
-        <item name="colorAccent">?attr/colorPrimary</item>
-        <!-- Override the default divider used in PreferenceScreen -->
-        <item name="preferenceFragmentCompatStyle">@style/App.PreferenceFragment.Material</item>
-        <!-- Override the default switch preference style to use the MD3 switch -->
-        <item name="switchPreferenceCompatStyle">@style/App.Preference.SwitchPreferenceCompat.Material3</item>
-        <item name="preferenceStyle">@style/Preference.Material</item>
-    </style>
-
-    <style name="AppTheme" parent="BaseAppTheme">
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowLightNavigationBar">true</item>
     </style>
 </resources>
