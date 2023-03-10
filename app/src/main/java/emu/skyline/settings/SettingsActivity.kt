@@ -9,12 +9,18 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.KeyEvent
+import android.view.Menu
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.WindowCompat
+import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.forEach
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.internal.ToolbarUtils
 import emu.skyline.R
 import emu.skyline.data.AppItemTag
@@ -23,6 +29,7 @@ import emu.skyline.utils.WindowInsetsHelper
 
 class SettingsActivity : AppCompatActivity() {
     val binding by lazy { SettingsActivityBinding.inflate(layoutInflater) }
+    var mapKeyTitle = mutableMapOf<String, Preference>()
 
     /**
      * The instance of [PreferenceFragmentCompat] that is shown inside [R.id.settings]
@@ -100,6 +107,60 @@ class SettingsActivity : AppCompatActivity() {
             .beginTransaction()
             .replace(R.id.settings, preferenceFragment)
             .commit()
+    }
+
+    override fun onCreateOptionsMenu(menu : Menu?) : Boolean {
+        (supportFragmentManager.findFragmentById(R.id.settings) as PreferenceFragmentCompat).preferenceScreen.forEach {
+            (it as PreferenceCategory).forEach { preference ->
+                if (preference.key != null)
+                    mapKeyTitle[preference.title.toString()] = preference
+            }
+        }
+
+        menuInflater.inflate(R.menu.menu, menu)
+        val menuItem = menu!!.findItem(R.id.app_bar_search)
+        val searchView = menuItem.actionView as SearchView
+        searchView.queryHint = getString(R.string.search)
+
+        searchView.setOnQueryTextFocusChangeListener { _, focus ->
+            (binding.titlebar.toolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags =
+                if (focus)
+                    AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
+                else
+                    AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+        }
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query : String?) : Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText : String?) : Boolean {
+                val filteredMap = mapKeyTitle.filterKeys { it.contains(newText as CharSequence, true) }
+                if (newText!!.isNotEmpty() && filteredMap.isNotEmpty()) {
+                    (supportFragmentManager.findFragmentById(R.id.settings) as PreferenceFragmentCompat).preferenceScreen.forEach { preferenceCategory ->
+                        var allHiden = true
+                        (preferenceCategory as PreferenceCategory).forEach {
+                            it.isVisible = (it.key != null && filteredMap.containsValue(it))
+                            if (it.isVisible && allHiden) {
+                                allHiden = false
+                            }
+                        }
+                        // Hide PreferenceCategory if none of its preferences match the search
+                        preferenceCategory.isVisible = !allHiden
+                    }
+                } else { // If user input is empty or there's no match, show all preferences (including those without key)
+                    (supportFragmentManager.findFragmentById(R.id.settings) as PreferenceFragmentCompat).preferenceScreen.forEach { preferenceCategory ->
+                        preferenceCategory.isVisible = true
+                        (preferenceCategory as PreferenceCategory).forEach {
+                            it.isVisible = true
+                        }
+                    }
+                }
+                return true
+            }
+        })
+        return super.onCreateOptionsMenu(menu)
     }
 
     /**
