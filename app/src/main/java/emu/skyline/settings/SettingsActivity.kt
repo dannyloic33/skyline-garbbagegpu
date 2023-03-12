@@ -110,11 +110,16 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu : Menu?) : Boolean {
-        (supportFragmentManager.findFragmentById(R.id.settings) as PreferenceFragmentCompat).preferenceScreen.forEach {
-            (it as PreferenceCategory).forEach { preference ->
-                if (preference.key != null)
+        (supportFragmentManager.findFragmentById(R.id.settings) as PreferenceFragmentCompat).preferenceScreen.forEach { preferenceCategory ->
+            var noKey = true
+            (preferenceCategory as PreferenceCategory).forEach { preference ->
+                if (preference.key != null) {
                     mapKeyTitle[preference.title.toString()] = preference
+                    noKey = false
+                }
             }
+            if (!noKey)
+                mapKeyTitle[preferenceCategory.title.toString()] = preferenceCategory
         }
 
         menuInflater.inflate(R.menu.menu, menu)
@@ -136,18 +141,22 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(newText : String?) : Boolean {
-                val filteredMap = mapKeyTitle.filterKeys { it.contains(newText as CharSequence, true) }
-                if (newText!!.isNotEmpty() && filteredMap.isNotEmpty()) {
+                val querys = newText!!.split(",").toTypedArray()
+                val filteredMap = mutableMapOf<String, Preference>()
+                for (query in querys) {
+                    filteredMap += mapKeyTitle.filterKeys { it.contains(query as CharSequence, true) }
+                }
+                if (newText.isNotEmpty() && filteredMap.isNotEmpty()) {
                     (supportFragmentManager.findFragmentById(R.id.settings) as PreferenceFragmentCompat).preferenceScreen.forEach { preferenceCategory ->
                         var allHiden = true
-                        (preferenceCategory as PreferenceCategory).forEach {
-                            it.isVisible = (it.key != null && filteredMap.containsValue(it))
-                            if (it.isVisible && allHiden) {
+                        (preferenceCategory as PreferenceCategory).forEach { preference ->
+                            preference.isVisible = filteredMap.containsValue(preference) || filteredMap.containsValue(preferenceCategory)
+                            if (preference.isVisible && allHiden) {
                                 allHiden = false
                             }
                         }
-                        // Hide PreferenceCategory if none of its preferences match the search
-                        preferenceCategory.isVisible = !allHiden
+                        // Hide PreferenceCategory if none of its preferences match the search and neither the category title
+                        preferenceCategory.isVisible = !allHiden || filteredMap.containsValue(preferenceCategory)
                     }
                 } else { // If user input is empty or there's no match, show all preferences (including those without key)
                     (supportFragmentManager.findFragmentById(R.id.settings) as PreferenceFragmentCompat).preferenceScreen.forEach { preferenceCategory ->
