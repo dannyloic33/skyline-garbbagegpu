@@ -28,6 +28,7 @@ import emu.skyline.utils.WindowInsetsHelper
 
 class SettingsActivity : AppCompatActivity() {
     val binding by lazy { SettingsActivityBinding.inflate(layoutInflater) }
+    val creditsCategories = arrayOf("category_credits", "category_licenses")
 
     /**
      * The instance of [PreferenceFragmentCompat] that is shown inside [R.id.settings]
@@ -127,22 +128,23 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(newText : String) : Boolean {
-                val queries = newText.split(",").toTypedArray()
+                val queries = newText.split(",")
                 if (newText.isNotEmpty()) {
                     preferenceFragment.preferenceScreen.forEach { preferenceCategory ->
-                        val categoryVisible = queries.any { preferenceCategory.title?.contains(it, true) ?: false }
-                        // Tracks whether all preferences under this category are hidden
-                        var areAllPrefsHidden = true
-                        // Tracks whether there is at least one preference under this category that has a key
-                        var hasNonNullPreferenceKey = false
-                        (preferenceCategory as PreferenceCategory).forEach { preference ->
-                            preference.isVisible = categoryVisible || (preference.key != null && queries.any { preference.title?.contains(it, true) ?: false })
-                            if (preference.isVisible && areAllPrefsHidden)
-                                areAllPrefsHidden = false
-                            hasNonNullPreferenceKey = hasNonNullPreferenceKey || preference.key != null
+                        if (creditsCategories.contains(preferenceCategory.key)) {
+                            preferenceCategory.isVisible = false
+                        } else {
+                            val queryMatchesCategory = queries.any { preferenceCategory.title?.contains(it, true) ?: false }
+                            // Tracks whether all preferences under this category are hidden
+                            var areAllPrefsHidden = true
+                            (preferenceCategory as PreferenceCategory).forEach { preference ->
+                                preference.isVisible = queryMatchesCategory || queries.any { preference.title?.contains(it, true) ?: false }
+                                if (preference.isVisible && areAllPrefsHidden)
+                                    areAllPrefsHidden = false
+                            }
+                            // Hide PreferenceCategory if none of its preferences match the search and neither the category title
+                            preferenceCategory.isVisible = !areAllPrefsHidden || queryMatchesCategory
                         }
-                        // Hide PreferenceCategory if none of its preferences match the search and neither the category title
-                        preferenceCategory.isVisible = hasNonNullPreferenceKey && (!areAllPrefsHidden || categoryVisible)
                     }
                 } else { // If user input is empty, show all preferences
                     preferenceFragment.preferenceScreen.forEach { preferenceCategory ->
