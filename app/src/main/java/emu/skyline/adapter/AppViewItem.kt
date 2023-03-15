@@ -102,7 +102,7 @@ class AppViewItem(var layoutType : LayoutType, private val item : AppItem, priva
         binding.textVersion.isSelected = true
         binding.textAuthor.isSelected = true
 
-        binding.icon.setImageBitmap(item.bitmapIcon)
+        item.icon?.let { binding.icon.setImageBitmap(it) }
 
         if (layoutType == LayoutType.List) {
             binding.icon.setOnClickListener { showIconDialog(it.context, item) }

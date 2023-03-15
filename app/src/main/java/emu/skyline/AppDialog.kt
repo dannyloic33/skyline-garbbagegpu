@@ -63,7 +63,7 @@ class AppDialog : BottomSheetDialogFragment() {
             }
         }
 
-        binding.gameIcon.setImageBitmap(item.bitmapIcon)
+        item.icon?.let { binding.gameIcon.setImageBitmap(it) }
         binding.gameTitle.text = item.title
         binding.gameVersion.text = item.version ?: item.loaderResultString(requireContext())
         binding.gameTitleId.text = item.titleId
