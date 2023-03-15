@@ -133,18 +133,18 @@ class SettingsActivity : AppCompatActivity() {
                     preferenceFragment.preferenceScreen.forEach { preferenceCategory ->
                         if (creditsCategories.contains(preferenceCategory.key)) {
                             preferenceCategory.isVisible = false
-                        } else {
-                            val queryMatchesCategory = queries.any { preferenceCategory.title?.contains(it, true) ?: false }
-                            // Tracks whether all preferences under this category are hidden
-                            var areAllPrefsHidden = true
-                            (preferenceCategory as PreferenceCategory).forEach { preference ->
-                                preference.isVisible = queryMatchesCategory || queries.any { preference.title?.contains(it, true) ?: false }
-                                if (preference.isVisible && areAllPrefsHidden)
-                                    areAllPrefsHidden = false
-                            }
-                            // Hide PreferenceCategory if none of its preferences match the search and neither the category title
-                            preferenceCategory.isVisible = !areAllPrefsHidden || queryMatchesCategory
+                            return@forEach
                         }
+                        val queryMatchesCategory = queries.any { preferenceCategory.title?.contains(it, true) ?: false }
+                        // Tracks whether all preferences under this category are hidden
+                        var areAllPrefsHidden = true
+                        (preferenceCategory as PreferenceCategory).forEach { preference ->
+                            preference.isVisible = queryMatchesCategory || queries.any { preference.title?.contains(it, true) ?: false }
+                            if (preference.isVisible && areAllPrefsHidden)
+                                areAllPrefsHidden = false
+                        }
+                        // Hide PreferenceCategory if none of its preferences match the search and neither the category title
+                        preferenceCategory.isVisible = !areAllPrefsHidden || queryMatchesCategory
                     }
                 } else { // If user input is empty, show all preferences
                     preferenceFragment.preferenceScreen.forEach { preferenceCategory ->
