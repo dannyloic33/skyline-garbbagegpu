@@ -71,7 +71,6 @@
     <string name="profile_picture">Imagem de Perfil</string>
     <string name="system_language">Idioma do Sistema</string>
     <string name="system_region">Região do Sistema</string>
-    <string name="rating_organization">Organização de classificação</string>
     <!-- Settings - Display -->
     <string name="display">Exibição</string>
     <string name="perf_stats">Exibir Estatísticas de Desempenho</string>
