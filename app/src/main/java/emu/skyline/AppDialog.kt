@@ -66,6 +66,7 @@ class AppDialog : BottomSheetDialogFragment() {
         item.icon?.let { binding.gameIcon.setImageBitmap(it) }
         binding.gameTitle.text = item.title
         binding.gameVersion.text = item.version ?: item.loaderResultString(requireContext())
+        binding.gameRating.text = item.ratingAge ?: item.loaderResultString(requireContext())
         binding.gameTitleId.text = item.titleId
         binding.gameAuthor.text = item.author
 
