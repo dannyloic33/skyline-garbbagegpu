@@ -126,7 +126,7 @@ namespace skyline::gpu {
             .has_broken_spirv_subgroup_mask_vector_extract_dynamic = traits.quirks.brokenSubgroupMaskExtractDynamic,
             .has_broken_spirv_subgroup_shuffle = traits.quirks.brokenSubgroupShuffle,
             .max_subgroup_size = traits.subgroupSize,
-            .has_broken_spirv_vector_access_chain = traits.quirks.brokenSpirvVectorAccessChain,
+            .has_broken_spirv_vector_access_chain = false,
             .disable_subgroup_shuffle = *state.settings->disableSubgroupShuffle,
         };
 
