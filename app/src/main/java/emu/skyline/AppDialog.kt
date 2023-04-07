@@ -186,4 +186,9 @@ class AppDialog : BottomSheetDialogFragment() {
             }
         }
     }
+
+    override fun onDestroyView(){
+        super.onDestroyView()
+        File("$savesFolderRoot${item.titleId}.zip").delete()
+    }
 }
