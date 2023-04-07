@@ -96,7 +96,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/FlexboxLayout1"
+            android:id="@+id/flexboxLayout1"
             style="@style/ThemeOverlay.Material3.Button.IconButton.Filled.Tonal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -153,7 +153,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/FlexboxLayout1"
+            app:layout_constraintTop_toBottomOf="@+id/flexboxLayout1"
             app:layout_constraintVertical_bias="1">
 
             <TextView
@@ -161,7 +161,7 @@
                 style="?attr/textAppearanceBodyMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Save management"
+                android:text="@string/save_management"
                 android:textAlignment="center"
                 app:layout_maxWidth="140dp" />
 
@@ -171,7 +171,8 @@
                 android:layout_width="48dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:contentDescription="@string/pin"
+                android:contentDescription="@string/delete_save"
+                android:tooltipText="@string/delete_save"
                 app:icon="@drawable/ic_delete"
                 app:iconGravity="textStart" />
 
@@ -181,7 +182,8 @@
                 android:layout_width="48dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:contentDescription="@string/pin"
+                android:contentDescription="@string/import_save"
+                android:tooltipText="@string/import_save"
                 app:icon="@drawable/ic_add"
                 app:iconGravity="textStart" />
 
@@ -191,7 +193,8 @@
                 android:layout_width="48dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:contentDescription="@string/pin"
+                android:contentDescription="@string/export_save"
+                android:tooltipText="@string/export_save"
                 app:icon="@drawable/ic_share"
                 app:iconGravity="textStart" />
 
