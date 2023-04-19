@@ -229,7 +229,7 @@ namespace skyline::gpu {
 
     TraitManager::QuirkManager::QuirkManager(const vk::PhysicalDeviceProperties &deviceProperties, const vk::PhysicalDeviceDriverProperties &driverProperties) {
         switch (driverProperties.driverID) {
-            case vk::DriverId::ImaginationProprietary: {
+            case vk::DriverId::eImaginationProprietary: {
                 needsIndividualTextureBindingWrites = true;
                 vkImageMutableFormatCostly = true; // Disables UBWC
                 adrenoRelaxedFormatAliasing = true;
