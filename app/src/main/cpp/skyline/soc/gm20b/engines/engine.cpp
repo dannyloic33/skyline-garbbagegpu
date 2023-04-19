@@ -9,7 +9,7 @@ namespace skyline::soc::gm20b::engine {
         constexpr i64 NsToTickDenominator{625};
 
         i64 nsTime{util::GetTimeNs()};
-        i64 timestamp{(nsTime / NsToTickDenominator) * NsToTickNumerator + ((nsTime % NsToTickDenominator) * NsToTickNumerator) / NsToTickDenominator};
+        i64 timestamp{nsTime};
 
         // By reporting that less time has passed on the  GPU than has actually passed we can avoid dynamic resolution kicking in
         // TODO: add a setting for this after global settings
