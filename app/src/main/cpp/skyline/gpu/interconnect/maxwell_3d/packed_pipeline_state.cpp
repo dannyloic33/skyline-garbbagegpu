@@ -20,6 +20,7 @@ namespace skyline::gpu::interconnect::maxwell3d {
         if (enabled)
             depthRenderTargetFormat = static_cast<u8>(format) - static_cast<u8>(engine::ZtFormat::ZF32);
         else
+            depthRenderTargetFormat = DepthDisabledMagic;
     }
 
     void PackedPipelineState::SetVertexBinding(u32 index, engine::VertexStream stream, engine::VertexStreamInstance instance) {
