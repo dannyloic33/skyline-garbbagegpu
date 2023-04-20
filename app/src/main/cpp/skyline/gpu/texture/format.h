@@ -28,8 +28,8 @@ namespace skyline::gpu::format {
             FORMAT_SUFF_INT(name, bitsPerBlock, format, fmtSuffix, ##__VA_ARGS__) ; \
             FORMAT(name ## Float, bitsPerBlock, format ## Sfloat ## fmtSuffix, ##__VA_ARGS__)
 
-    #define FORMAT_INT_FLOAT(name, bitsPerBlock, format, ...) \
-            FORMAT_SUFF_INT_FLOAT(name, bitsPerBlock, format,, ##__VA_ARGS__)
+   // #define FORMAT_INT_FLOAT(name, bitsPerBlock, format, ...) \
+    //        FORMAT_SUFF_INT_FLOAT(name, bitsPerBlock, format,, ##__VA_ARGS__)
 
     #define FORMAT_SUFF_NORM(name, bitsPerBlock, format, fmtSuffix, ...) \
             FORMAT(name ## Unorm, bitsPerBlock, format ## Unorm ## fmtSuffix, ##__VA_ARGS__); \
