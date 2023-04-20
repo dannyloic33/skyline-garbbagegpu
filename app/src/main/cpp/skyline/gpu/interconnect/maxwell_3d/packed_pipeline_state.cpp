@@ -223,7 +223,7 @@ namespace skyline::gpu::interconnect::maxwell3d {
             FORMAT_CASE(S8Z24, D24UnormS8Uint);
             FORMAT_CASE(S8, S8Uint);
             FORMAT_CASE(ZF32, D32Float);
-            FORMAT_CASE(ZF32_X24S8, D32FloatS8Uint);
+            FORMAT_CASE(ZF32_X24S8, eD32Sfloat);
             default:
                 throw exception("Unsupported depth rendertarget format: 0x{:X}", static_cast<u32>(format));
         }
