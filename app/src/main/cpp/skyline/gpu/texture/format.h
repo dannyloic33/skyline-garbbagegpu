@@ -194,9 +194,7 @@ namespace skyline::gpu::format {
            .b = vk::ComponentSwizzle::eB,
            .a = vk::ComponentSwizzle::eA,
     });
-    FORMAT(D32Float, 32, eD32Sfloat, .vkAspect = {
-            vka::eStencil | vka::eDepth
-    }, .swizzleMapping = {
+    FORMAT(D32Float, 32, eD32Sfloat, vka::eDepth, .swizzleMapping = {
            .r = vk::ComponentSwizzle::eR,
            .g = vk::ComponentSwizzle::eR,
            .b = vk::ComponentSwizzle::eB,
@@ -211,6 +209,14 @@ namespace skyline::gpu::format {
            .a = vk::ComponentSwizzle::eA,
     });
     FORMAT(D24UnormS8Uint, 32, eD24UnormS8Uint, .vkAspect = {
+           vka::eStencil | vka::eDepth
+    }, .swizzleMapping = {
+           .r = vk::ComponentSwizzle::eR,
+           .g = vk::ComponentSwizzle::eR,
+           .b = vk::ComponentSwizzle::eB,
+           .a = vk::ComponentSwizzle::eA,
+    });
+    FORMAT(D32FloatS8Uint, 32, eD32SfloatS8Uint, .vkAspect = {
            vka::eStencil | vka::eDepth
     }, .swizzleMapping = {
            .r = vk::ComponentSwizzle::eR,
