@@ -194,12 +194,12 @@ namespace skyline::gpu::format {
            .b = vk::ComponentSwizzle::eB,
            .a = vk::ComponentSwizzle::eA,
     });
-    FORMAT(D32Float, 32, eD32Sfloat, vka::eDepth, .swizzleMapping = {
-           .r = vk::ComponentSwizzle::eR,
-           .g = vk::ComponentSwizzle::eR,
-           .b = vk::ComponentSwizzle::eB,
-           .a = vk::ComponentSwizzle::eA,
-    });
+    //FORMAT(D32Float, 32, eD32Sfloat, vka::eDepth, .swizzleMapping = {
+     //      .r = vk::ComponentSwizzle::eR,
+      //     .g = vk::ComponentSwizzle::eR,
+       //    .b = vk::ComponentSwizzle::eB,
+        //   .a = vk::ComponentSwizzle::eA,
+   // });
     FORMAT(D24UnormX8Uint, 32, eX8D24UnormPack32, .vkAspect = {
            vka::eDepth
     }, .swizzleMapping = {
