@@ -216,7 +216,7 @@ namespace skyline::gpu::format {
            .b = vk::ComponentSwizzle::eB,
            .a = vk::ComponentSwizzle::eA,
     });
-    FORMAT(D32FloatS8Uint, 32, eD32SfloatS8Uint, .vkAspect = {
+    FORMAT(D32Float, 32, eD32Sfloat, .vkAspect = {
            vka::eStencil | vka::eDepth
     }, .swizzleMapping = {
            .r = vk::ComponentSwizzle::eR,
