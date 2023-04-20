@@ -20,7 +20,6 @@ namespace skyline::gpu::interconnect::maxwell3d {
         if (enabled)
             depthRenderTargetFormat = static_cast<u8>(format) - static_cast<u8>(engine::ZtFormat::ZF32);
         else
-            depthRenderTargetFormat = DepthDisabledMagic;
     }
 
     void PackedPipelineState::SetVertexBinding(u32 index, engine::VertexStream stream, engine::VertexStreamInstance instance) {
@@ -220,10 +219,10 @@ namespace skyline::gpu::interconnect::maxwell3d {
             FORMAT_CASE(Z16, D16Unorm);
             FORMAT_CASE(Z24S8, S8UintD24Unorm);
             FORMAT_CASE(X8Z24, D24UnormX8Uint);
-            FORMAT_CASE(S8Z24, D24UnormS8Uint);
+            FORMAT_CASE(S8Z24, ZF32_X24S8, D24UnormS8Uint);
             FORMAT_CASE(S8, S8Uint);
             FORMAT_CASE(ZF32, D32Float);
-            FORMAT_CASE(ZF32_X24S8, D32Sfloat);
+            //FORMAT_CASE(ZF32_X24S8, D32Sfloat);
             default:
                 throw exception("Unsupported depth rendertarget format: 0x{:X}", static_cast<u32>(format));
         }
