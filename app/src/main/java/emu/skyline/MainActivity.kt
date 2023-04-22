@@ -16,9 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.use
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.WindowCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -31,12 +29,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import emu.skyline.adapter.*
 import emu.skyline.data.AppItem
 import emu.skyline.data.AppItemTag
-import emu.skyline.data.DataItem
-import emu.skyline.data.HeaderItem
 import emu.skyline.databinding.MainActivityBinding
 import emu.skyline.loader.AppEntry
 import emu.skyline.loader.LoaderResult
-import emu.skyline.loader.RomFormat
 import emu.skyline.provider.DocumentsProvider
 import emu.skyline.settings.AppSettings
 import emu.skyline.settings.EmulationSettings
@@ -48,9 +43,6 @@ import kotlin.math.ceil
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    companion object {
-        private val formatOrder = listOf(RomFormat.NSP, RomFormat.XCI, RomFormat.NRO, RomFormat.NSO, RomFormat.NCA)
-    }
 
     private val binding by lazy { MainActivityBinding.inflate(layoutInflater) }
 
@@ -63,8 +55,7 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
 
-    private var formatFilter : RomFormat? = null
-    private var appEntries : Map<RomFormat, List<AppEntry>>? = null
+    private var appEntries : List<AppEntry>? = null
 
     enum class SortingOrder {
         AlphabeticalAsc,
@@ -117,12 +108,6 @@ class MainActivity : AppCompatActivity() {
         PreferenceManager.setDefaultValues(this, R.xml.emulation_preferences, false)
 
         adapter.apply {
-            setHeaderItems(listOf(HeaderRomFilterItem(formatOrder, if (appSettings.romFormatFilter == 0) null else formatOrder[appSettings.romFormatFilter - 1]) { romFormat ->
-                appSettings.romFormatFilter = romFormat?.let { formatOrder.indexOf(romFormat) + 1 } ?: 0
-                formatFilter = romFormat
-                populateAdapter()
-            }))
-
             setOnFilterPublishedListener {
                 binding.appList.post { binding.appList.smoothScrollToPosition(0) }
             }
@@ -181,7 +166,7 @@ class MainActivity : AppCompatActivity() {
      */
     private inner class CustomLayoutManager(gridSpan : Int) : GridLayoutManager(this, gridSpan) {
         init {
-            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            spanSizeLookup = object : SpanSizeLookup() {
                 override fun getSpanSize(position : Int) = if (layoutType == LayoutType.List || adapter.currentItems[position].fullSpan) gridSpan else 1
             }
         }
@@ -224,37 +209,16 @@ class MainActivity : AppCompatActivity() {
         if (appSettings.searchLocation.isEmpty()) documentPicker.launch(null)
     }
 
-    private fun getDataItems() = mutableListOf<DataItem>().apply {
-        if (appSettings.groupByFormat) {
-            appEntries?.let { entries ->
-                val formats = formatFilter?.let { listOf(it) } ?: formatOrder
-                for (format in formats) {
-                    entries[format]?.let {
-                        add(HeaderItem(format.name))
-                        for (entry in sortGameList(it)) {
-                            add(AppItem(entry))
-                        }
-                    }
-                }
-            }
-        } else {
-            val gameList = mutableListOf<AppEntry>()
-            appEntries?.let { entries ->
-                val formats = formatFilter?.let { listOf(it) } ?: formatOrder
-                for (format in formats) {
-                    entries[format]?.let {
-                        it.forEach { entry -> gameList.add(entry) }
-                    }
-                }
-            }
-            for (entry in sortGameList(gameList.toList())) {
-                add(AppItem(entry))
+    private fun getAppItems() = mutableListOf<AppViewItem>().apply {
+        appEntries?.let { entries ->
+            sortGameList(entries.toList()).forEach { entry ->
+                add(AppItem(entry).toViewItem())
             }
         }
     }
 
     private fun sortGameList(gameList : List<AppEntry>) : List<AppEntry> {
-        val sortedApps : MutableList<AppEntry> = mutableListOf<AppEntry>()
+        val sortedApps : MutableList<AppEntry> = mutableListOf()
         gameList.forEach { entry -> sortedApps.add(entry) }
         when (appSettings.sortAppsBy) {
             SortingOrder.AlphabeticalAsc.ordinal -> sortedApps.sortBy { it.name }
@@ -299,19 +263,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadRoms(loadFromFile : Boolean) {
+        if (!loadFromFile) {
+            binding.romPlaceholder.isVisible = true
+            binding.romPlaceholder.text = getString(R.string.searching_roms)
+        }
         viewModel.loadRoms(this, loadFromFile, Uri.parse(appSettings.searchLocation), EmulationSettings.global.systemLanguage)
         appSettings.refreshRequired = false
     }
 
     private fun populateAdapter() {
-        val items = getDataItems()
-        adapter.setItems(items.map {
-            when (it) {
-                is HeaderItem -> HeaderViewItem(it.title)
-                is AppItem -> it.toViewItem()
-            }
-        })
-        if (items.isEmpty()) adapter.setItems(listOf(HeaderViewItem(getString(R.string.no_rom))))
+        val items = getAppItems()
+        if (items.isEmpty())
+            binding.romPlaceholder.text = getString(R.string.no_rom)
+        else
+            binding.romPlaceholder.isVisible = false
+        adapter.setItems(items)
     }
 
     override fun onStart() {
