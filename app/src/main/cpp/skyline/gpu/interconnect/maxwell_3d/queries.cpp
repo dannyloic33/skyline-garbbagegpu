@@ -36,7 +36,7 @@ namespace skyline::gpu::interconnect::maxwell3d {
     }
 
     //TODO call cmdbuf begin
-    /*void Queries::Counter::Begin(InterconnectContext &ctx, bool atExecutionStart) {
+    void Queries::Counter::Begin(InterconnectContext &ctx, bool atExecutionStart) {
         auto prepareFunc{Prepare(ctx)};
 
         *queryActive = true;
@@ -44,7 +44,7 @@ namespace skyline::gpu::interconnect::maxwell3d {
 
         // Begin the query with the current query count as index
         auto func{[this, queryIndex = *this->usedQueryCount - 1](vk::raii::CommandBuffer &commandBuffer, const std::shared_ptr<FenceCycle> &, GPU &) {
-            commandBuffer.beginQuery(*pool, queryIndex, vk::QueryControlFlagBits::ePrecise);
+            commandBuffer.beginQuery(*pool, queryIndex);
         }};
         
         if (atExecutionStart) {
@@ -59,7 +59,7 @@ namespace skyline::gpu::interconnect::maxwell3d {
             ctx.executor.AddCommand(std::move(func));
         }
     }
-*/
+
     // TODO must be called after begin in cmdbuf
     void Queries::Counter::Report(InterconnectContext &ctx, BufferView view, std::optional<u64> timestamp) {
         if (ctx.executor.executionTag != lastTag)
