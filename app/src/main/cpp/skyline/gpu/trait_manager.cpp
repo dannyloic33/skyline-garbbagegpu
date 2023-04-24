@@ -43,8 +43,8 @@ namespace skyline::gpu {
                 EXT_SET("VK_EXT_sampler_mirror_clamp_to_edge", supportsSamplerMirrorClampToEdge);
                 EXT_SET("VK_EXT_sampler_filter_minmax", supportsSamplerReductionMode);
                 EXT_SET("VK_EXT_custom_border_color", hasCustomBorderColorExt);
-                EXT_SET("VK_EXT_provoking_vertex", hasProvokingVertexExt);
-                EXT_SET("VK_EXT_vertex_attribute_divisor", hasVertexAttributeDivisorExt);
+                //EXT_SET("VK_EXT_provoking_vertex", hasProvokingVertexExt);
+                //EXT_SET("VK_EXT_vertex_attribute_divisor", hasVertexAttributeDivisorExt);
                 EXT_SET_COND("VK_KHR_push_descriptor", supportsPushDescriptors, !quirks.brokenPushDescriptors);
                 EXT_SET("VK_KHR_image_format_list", supportsImageFormatList);
                 EXT_SET_COND("VK_KHR_imageless_framebuffer", hasImagelessFramebuffersExt, supportsImageFormatList);
@@ -243,7 +243,7 @@ namespace skyline::gpu {
              
 
                 //if (deviceProperties.driverVersion < VK_MAKE_VERSION(512, 600, 0))
-                maxSubpassCount = 64; // Driver will segfault while destroying the renderpass and associated objects if this is exceeded on all 5xx and below drivers
+                maxSubpassCount = 32; // Driver will segfault while destroying the renderpass and associated objects if this is exceeded on all 5xx and below drivers
 
                 //if (deviceProperties.driverVersion >= VK_MAKE_VERSION(512, 615, 0) && deviceProperties.driverVersion <= VK_MAKE_VERSION(512, 615, 512))
                 brokenMultithreadedPipelineCompilation = true;
