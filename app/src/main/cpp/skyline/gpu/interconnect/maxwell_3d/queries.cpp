@@ -67,7 +67,7 @@ namespace skyline::gpu::interconnect::maxwell3d {
 
         // End the query with the current query count as index
         ctx.executor.AddCommand([=, this, queryIndex = *this->usedQueryCount - 1](vk::raii::CommandBuffer &commandBuffer, const std::shared_ptr<FenceCycle> &, GPU &gpu) {
-            commandBuffer.endQuery(*pool, queryIndex, vk::QueryControlFlagBits::eExact));
+            commandBuffer.endQuery(*pool, queryIndex, vk::QueryControlFlagBits));
         });
 
         *queryActive = false;
