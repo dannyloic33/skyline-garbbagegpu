@@ -231,10 +231,10 @@ namespace skyline::gpu {
         switch (driverProperties.driverID) {
             case vk::DriverId::eImaginationProprietary: {
                 //needsIndividualTextureBindingWrites = true;
-                //seems good vkImageMutableFormatCostly = true; // Disables UBWC
-                //seems goodadrenoRelaxedFormatAliasing = true;
+                vkImageMutableFormatCostly = true; // Disables UBWC
+                RelaxedFormatAliasing = true;
                 //adrenoBrokenFormatReport = true;
-                //maybe goodrelaxedRenderPassCompatibility = true; // Adreno drivers support relaxed render pass compatibility rules
+                relaxedRenderPassCompatibility = true; // Adreno drivers support relaxed render pass compatibility rules
                 //brokenPushDescriptors = true;
                 //brokenSpirvPositionInput = true;
                 //brokenSpirvAccessChainOpt = true;
@@ -243,13 +243,13 @@ namespace skyline::gpu {
              
 
                 //if (deviceProperties.driverVersion < VK_MAKE_VERSION(512, 600, 0))
-                //    maxSubpassCount = 64; // Driver will segfault while destroying the renderpass and associated objects if this is exceeded on all 5xx and below drivers
+                maxSubpassCount = 64; // Driver will segfault while destroying the renderpass and associated objects if this is exceeded on all 5xx and below drivers
 
                 //if (deviceProperties.driverVersion >= VK_MAKE_VERSION(512, 615, 0) && deviceProperties.driverVersion <= VK_MAKE_VERSION(512, 615, 512))
-                //    brokenMultithreadedPipelineCompilation = true;
+                brokenMultithreadedPipelineCompilation = true;
 
                 //if (deviceProperties.driverVersion < VK_MAKE_VERSION(512, 672, 0))
-                //    brokenSubgroupMaskExtractDynamic = true;
+                brokenSubgroupMaskExtractDynamic = true;
 
                // brokenSubgroupShuffle = true;
                 //brokenSpirvVectorAccessChain = true;
