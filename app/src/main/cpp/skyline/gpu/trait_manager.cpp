@@ -230,7 +230,7 @@ namespace skyline::gpu {
     TraitManager::QuirkManager::QuirkManager(const vk::PhysicalDeviceProperties &deviceProperties, const vk::PhysicalDeviceDriverProperties &driverProperties) {
         switch (driverProperties.driverID) {
             case vk::DriverId::eImaginationProprietary: {
-                needsIndividualTextureBindingWrites = true;
+                //needsIndividualTextureBindingWrites = true;
                 vkImageMutableFormatCostly = true; // Disables UBWC
                 adrenoRelaxedFormatAliasing = true;
                 //adrenoBrokenFormatReport = true;
@@ -238,6 +238,9 @@ namespace skyline::gpu {
                 //brokenPushDescriptors = true;
                 //brokenSpirvPositionInput = true;
                 //brokenSpirvAccessChainOpt = true;
+                //brokenComputeShaders = true;
+                brokenDynamicStateVertexBindings = true;
+             
 
                 //if (deviceProperties.driverVersion < VK_MAKE_VERSION(512, 600, 0))
                 //    maxSubpassCount = 64; // Driver will segfault while destroying the renderpass and associated objects if this is exceeded on all 5xx and below drivers
