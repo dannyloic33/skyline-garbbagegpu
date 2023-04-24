@@ -232,7 +232,7 @@ namespace skyline::gpu {
             case vk::DriverId::eImaginationProprietary: {
                 //needsIndividualTextureBindingWrites = true;
                 vkImageMutableFormatCostly = true; // Disables UBWC
-                RelaxedFormatAliasing = true;
+                adrenoRelaxedFormatAliasing = true;
                 //adrenoBrokenFormatReport = true;
                 relaxedRenderPassCompatibility = true; // Adreno drivers support relaxed render pass compatibility rules
                 //brokenPushDescriptors = true;
