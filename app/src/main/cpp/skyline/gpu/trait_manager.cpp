@@ -57,7 +57,7 @@ namespace skyline::gpu {
                 EXT_SET("VK_KHR_shader_float_controls", supportsFloatControls);
                 EXT_SET("VK_KHR_uniform_buffer_standard_layout", supportsUniformBufferStandardLayout);
                 EXT_SET("VK_EXT_primitive_topology_list_restart", hasPrimitiveTopologyListRestartExt);
-                EXT_SET("VK_EXT_transform_feedback", hasTransformFeedbackExt);
+                //EXT_SET("VK_EXT_transform_feedback", hasTransformFeedbackExt);
                 EXT_SET_COND("VK_EXT_extended_dynamic_state", hasExtendedDynamicStateExt, !quirks.brokenDynamicStateVertexBindings);
                 EXT_SET("VK_EXT_robustness2", hasRobustness2Ext);
             }
@@ -246,10 +246,10 @@ namespace skyline::gpu {
                 maxSubpassCount = 32; // Driver will segfault while destroying the renderpass and associated objects if this is exceeded on all 5xx and below drivers
 
                 //if (deviceProperties.driverVersion >= VK_MAKE_VERSION(512, 615, 0) && deviceProperties.driverVersion <= VK_MAKE_VERSION(512, 615, 512))
-                brokenMultithreadedPipelineCompilation = true;
+                //brokenMultithreadedPipelineCompilation = true;
 
                 //if (deviceProperties.driverVersion < VK_MAKE_VERSION(512, 672, 0))
-                brokenSubgroupMaskExtractDynamic = true;
+                //brokenSubgroupMaskExtractDynamic = true;
 
                // brokenSubgroupShuffle = true;
                 //brokenSpirvVectorAccessChain = true;
