@@ -43,8 +43,8 @@ namespace skyline::gpu {
                 EXT_SET("VK_EXT_sampler_mirror_clamp_to_edge", supportsSamplerMirrorClampToEdge);
                 EXT_SET("VK_EXT_sampler_filter_minmax", supportsSamplerReductionMode);
                 EXT_SET("VK_EXT_custom_border_color", hasCustomBorderColorExt);
-                //EXT_SET("VK_EXT_provoking_vertex", hasProvokingVertexExt);
-                //EXT_SET("VK_EXT_vertex_attribute_divisor", hasVertexAttributeDivisorExt);
+                EXT_SET("VK_EXT_provoking_vertex", hasProvokingVertexExt);
+                EXT_SET("VK_EXT_vertex_attribute_divisor", hasVertexAttributeDivisorExt);
                 EXT_SET_COND("VK_KHR_push_descriptor", supportsPushDescriptors, !quirks.brokenPushDescriptors);
                 EXT_SET("VK_KHR_image_format_list", supportsImageFormatList);
                 EXT_SET_COND("VK_KHR_imageless_framebuffer", hasImagelessFramebuffersExt, supportsImageFormatList);
@@ -57,7 +57,7 @@ namespace skyline::gpu {
                 EXT_SET("VK_KHR_shader_float_controls", supportsFloatControls);
                 EXT_SET("VK_KHR_uniform_buffer_standard_layout", supportsUniformBufferStandardLayout);
                 EXT_SET("VK_EXT_primitive_topology_list_restart", hasPrimitiveTopologyListRestartExt);
-                //EXT_SET("VK_EXT_transform_feedback", hasTransformFeedbackExt);
+                EXT_SET("VK_EXT_transform_feedback", hasTransformFeedbackExt);
                 EXT_SET_COND("VK_EXT_extended_dynamic_state", hasExtendedDynamicStateExt, !quirks.brokenDynamicStateVertexBindings);
                 EXT_SET("VK_EXT_robustness2", hasRobustness2Ext);
             }
