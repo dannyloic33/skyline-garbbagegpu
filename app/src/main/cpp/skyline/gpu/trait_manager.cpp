@@ -231,14 +231,14 @@ namespace skyline::gpu {
         switch (driverProperties.driverID) {
             case vk::DriverId::eImaginationProprietary: {
                 //needsIndividualTextureBindingWrites = true;
-                vkImageMutableFormatCostly = true; // Disables UBWC
-                adrenoRelaxedFormatAliasing = true;
+                //seems good vkImageMutableFormatCostly = true; // Disables UBWC
+                //seems goodadrenoRelaxedFormatAliasing = true;
                 //adrenoBrokenFormatReport = true;
-                relaxedRenderPassCompatibility = true; // Adreno drivers support relaxed render pass compatibility rules
+                //maybe goodrelaxedRenderPassCompatibility = true; // Adreno drivers support relaxed render pass compatibility rules
                 //brokenPushDescriptors = true;
                 //brokenSpirvPositionInput = true;
                 //brokenSpirvAccessChainOpt = true;
-                brokenComputeShaders = true;
+                //brokenComputeShaders = true;
                 brokenDynamicStateVertexBindings = true;
              
 
