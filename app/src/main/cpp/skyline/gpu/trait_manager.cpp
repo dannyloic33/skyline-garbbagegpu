@@ -238,7 +238,7 @@ namespace skyline::gpu {
                 //brokenPushDescriptors = true;
                 //brokenSpirvPositionInput = true;
                 //brokenSpirvAccessChainOpt = true;
-                //brokenComputeShaders = true;
+                brokenComputeShaders = true;
                 brokenDynamicStateVertexBindings = true;
              
 
