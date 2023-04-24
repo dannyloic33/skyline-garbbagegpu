@@ -233,23 +233,23 @@ namespace skyline::gpu {
                 needsIndividualTextureBindingWrites = true;
                 vkImageMutableFormatCostly = true; // Disables UBWC
                 adrenoRelaxedFormatAliasing = true;
-                adrenoBrokenFormatReport = true;
+                //adrenoBrokenFormatReport = true;
                 relaxedRenderPassCompatibility = true; // Adreno drivers support relaxed render pass compatibility rules
-                brokenPushDescriptors = true;
-                brokenSpirvPositionInput = true;
-                brokenSpirvAccessChainOpt = true;
+                //brokenPushDescriptors = true;
+                //brokenSpirvPositionInput = true;
+                //brokenSpirvAccessChainOpt = true;
 
-                if (deviceProperties.driverVersion < VK_MAKE_VERSION(512, 600, 0))
-                    maxSubpassCount = 64; // Driver will segfault while destroying the renderpass and associated objects if this is exceeded on all 5xx and below drivers
+                //if (deviceProperties.driverVersion < VK_MAKE_VERSION(512, 600, 0))
+                //    maxSubpassCount = 64; // Driver will segfault while destroying the renderpass and associated objects if this is exceeded on all 5xx and below drivers
 
-                if (deviceProperties.driverVersion >= VK_MAKE_VERSION(512, 615, 0) && deviceProperties.driverVersion <= VK_MAKE_VERSION(512, 615, 512))
-                    brokenMultithreadedPipelineCompilation = true;
+                //if (deviceProperties.driverVersion >= VK_MAKE_VERSION(512, 615, 0) && deviceProperties.driverVersion <= VK_MAKE_VERSION(512, 615, 512))
+                //    brokenMultithreadedPipelineCompilation = true;
 
-                if (deviceProperties.driverVersion < VK_MAKE_VERSION(512, 672, 0))
-                    brokenSubgroupMaskExtractDynamic = true;
+                //if (deviceProperties.driverVersion < VK_MAKE_VERSION(512, 672, 0))
+                //    brokenSubgroupMaskExtractDynamic = true;
 
-                brokenSubgroupShuffle = true;
-                brokenSpirvVectorAccessChain = true;
+               // brokenSubgroupShuffle = true;
+                //brokenSpirvVectorAccessChain = true;
                 maxGlobalPriority = vk::QueueGlobalPriorityEXT::eHigh;
                 break;
             }
