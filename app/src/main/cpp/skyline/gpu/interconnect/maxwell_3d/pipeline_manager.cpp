@@ -474,7 +474,7 @@ namespace skyline::gpu::interconnect::maxwell3d {
         }
     }
 
-    static vk::ProvokingVertexModeEXT ConvertProvokingVertex(engine::ProvokingVertex::Value provokingVertex) {
+   /* static vk::ProvokingVertexModeEXT ConvertProvokingVertex(engine::ProvokingVertex::Value provokingVertex) {
         switch (provokingVertex) {
             case engine::ProvokingVertex::Value::First:
                 return vk::ProvokingVertexModeEXT::eFirstVertex;
@@ -482,7 +482,7 @@ namespace skyline::gpu::interconnect::maxwell3d {
                 return vk::ProvokingVertexModeEXT::eLastVertex;
         }
     }
-
+*/
     static GraphicsPipelineAssembler::CompiledPipeline MakeCompiledPipeline(GPU &gpu,
                                                                                  const PackedPipelineState &packedState,
                                                                                  const std::array<ShaderStage, engine::ShaderStageCount> &shaderStages,
