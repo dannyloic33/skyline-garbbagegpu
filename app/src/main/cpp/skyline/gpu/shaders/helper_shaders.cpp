@@ -64,7 +64,7 @@ namespace skyline::gpu {
                 .frontFace = vk::FrontFace::eClockwise,
                 .depthBiasEnable = false
             }, {
-                .provokingVertexMode = vk::ProvokingVertexModeEXT::eFirstVertex
+                //.provokingVertexMode = vk::ProvokingVertexModeEXT::eFirstVertex
             }
         };
 
