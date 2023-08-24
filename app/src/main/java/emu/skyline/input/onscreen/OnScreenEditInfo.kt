@@ -8,11 +8,7 @@ package emu.skyline.input.onscreen
 import android.content.res.Resources
 import android.util.TypedValue
 
-enum class EditMode {
-    None,
-    Move,
-    Resize
-}
+typealias OnEditButtonChangedListener = ((ConfigurableButton) -> Unit)
 
 /**
  * A small class that holds information about the current edit session
@@ -20,14 +16,22 @@ enum class EditMode {
  */
 class OnScreenEditInfo {
     /**
-     * The current edit mode
+     * Whether the buttons are currently in edit mode
      */
-    var editMode : EditMode = EditMode.None
+    var isEditing : Boolean = false
 
     /**
      * The button that is currently being edited
      */
-    var editButton : OnScreenButton? = null
+    private lateinit var _editButton : ConfigurableButton
+    var editButton : ConfigurableButton
+        get() = _editButton
+        set(value) {
+            _editButton = value
+            onEditButtonChangedListener?.invoke(value)
+        }
+
+    var onEditButtonChangedListener : OnEditButtonChangedListener? = null
 
     /**
      * Whether the buttons should snap to a grid when in edit mode
@@ -36,12 +40,15 @@ class OnScreenEditInfo {
 
     var gridSize : Int = GridSize
 
-    val isEditing get() = editMode != EditMode.None
-
     companion object {
         /**
          * The size of the grid, calculated from the value of 8dp
          */
         var GridSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, Resources.getSystem().displayMetrics).toInt()
+
+        /**
+         * The amount the button will be moved when using the arrow keys
+         */
+        val ArrowKeyMoveAmount = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, Resources.getSystem().displayMetrics).toInt()
     }
 }

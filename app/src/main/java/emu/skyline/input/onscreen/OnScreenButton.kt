@@ -6,6 +6,7 @@
 package emu.skyline.input.onscreen
 
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
 import android.graphics.Rect
@@ -13,7 +14,10 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
+import android.util.TypedValue
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.use
+import emu.skyline.R
 import emu.skyline.input.ButtonId
 import kotlin.math.roundToInt
 
@@ -22,22 +26,42 @@ import kotlin.math.roundToInt
  */
 abstract class OnScreenButton(
     onScreenControllerView : OnScreenControllerView,
-    val buttonId : ButtonId,
+    final override val buttonId : ButtonId,
     private val defaultRelativeX : Float,
     private val defaultRelativeY : Float,
     private val defaultRelativeWidth : Float,
     private val defaultRelativeHeight : Float,
     drawableId : Int,
     private val defaultEnabled : Boolean
-) {
+) : ConfigurableButton {
     companion object {
         /**
          * Aspect ratio the default values were based on
          */
         const val CONFIGURED_ASPECT_RATIO = 2074f / 874f
+
+        private var disabledSelectionPaint : Paint? = null
+        private var toggleModePaint : Paint? = null
     }
 
-    val config = OnScreenConfiguration(onScreenControllerView.context, buttonId, defaultRelativeX, defaultRelativeY, defaultEnabled)
+    init {
+        if (disabledSelectionPaint == null) {
+            disabledSelectionPaint = Paint().apply {
+                color = onScreenControllerView.context.obtainStyledAttributes(intArrayOf(R.attr.colorTertiary)).use { it.getColor(0, Color.GREEN) }
+                style = Paint.Style.STROKE
+                strokeWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, onScreenControllerView.context.resources.displayMetrics)
+            }
+        }
+
+        if (toggleModePaint == null) {
+            toggleModePaint = Paint().apply {
+                style = Paint.Style.STROKE
+                strokeWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, onScreenControllerView.context.resources.displayMetrics)
+            }
+        }
+    }
+
+    final override val config : OnScreenConfiguration = OnScreenConfigurationImpl(onScreenControllerView.context, buttonId, defaultRelativeX, defaultRelativeY, defaultEnabled)
 
     protected val drawable = ContextCompat.getDrawable(onScreenControllerView.context, drawableId)!!
 
@@ -46,12 +70,12 @@ abstract class OnScreenButton(
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         isAntiAlias = true
     }
-    private val textBoundsRect = Rect()
+    protected val textBoundsRect = Rect()
 
     var relativeX = config.relativeX
     var relativeY = config.relativeY
-    private val relativeWidth get() = defaultRelativeWidth * (config.globalScale + config.scale)
-    private val relativeHeight get() = defaultRelativeHeight * (config.globalScale + config.scale)
+    private val relativeWidth get() = defaultRelativeWidth * config.scale
+    private val relativeHeight get() = defaultRelativeHeight * config.scale
 
     /**
      * The width of the view this button is in, populated by the view during draw
@@ -83,7 +107,7 @@ abstract class OnScreenButton(
     private val left get() = currentX - itemWidth / 2f
     private val top get() = currentY - itemHeight / 2f
 
-    protected val currentBounds get() = Rect(left.roundToInt(), top.roundToInt(), (left + itemWidth).roundToInt(), (top + itemHeight).roundToInt())
+    val currentBounds get() = Rect(left.roundToInt(), top.roundToInt(), (left + itemWidth).roundToInt(), (top + itemHeight).roundToInt())
 
     /**
      * Keeps track of finger when there are multiple touches
@@ -92,18 +116,19 @@ abstract class OnScreenButton(
     var partnerPointerId = -1
 
     var isPressed = false
+    var isToggled = false
 
     var hapticFeedback = false
 
     /**
      * The edit session information, populated by the view
      */
-    protected var editInfo = onScreenControllerView.editInfo
+    protected val editInfo = onScreenControllerView.editInfo
 
     /**
      * The touch point when the edit session started
      */
-    protected var editInitialTouchPoint = PointF()
+    protected val editInitialTouchPoint = PointF()
 
     /**
      * The scale of the button when the edit session started
@@ -121,36 +146,63 @@ abstract class OnScreenButton(
         canvas.drawText(text, x - textBoundsRect.width() / 2f - textBoundsRect.left, y + textBoundsRect.height() / 2f - textBoundsRect.bottom, buttonSymbolPaint)
     }
 
-    open fun render(canvas : Canvas) {
-        val bounds = currentBounds
-        val alpha = if (isPressed) (config.alpha - 130).coerceIn(30..255) else config.alpha
-        renderColors(drawable)
-        drawable.apply {
-            this.bounds = bounds
-            this.alpha = alpha
-            draw(canvas)
-        }
-        renderCenteredText(canvas, buttonId.short!!, itemWidth.coerceAtMost(itemHeight) * 0.4f, bounds.centerX().toFloat(), bounds.centerY().toFloat(), alpha)
-    }
-
-    private fun renderColors(drawable : Drawable) {
+    private fun applyColorsToDrawable(drawable : Drawable) {
         when (drawable) {
             is GradientDrawable -> drawable.setColor(config.backgroundColor)
-            is LayerDrawable -> {
-                for (i in 0 until drawable.numberOfLayers) renderColors(drawable.getDrawable(i))
-            }
+            is LayerDrawable -> for (i in 0 until drawable.numberOfLayers) applyColorsToDrawable(drawable.getDrawable(i))
             else -> drawable.setTint(config.backgroundColor)
         }
     }
 
-    abstract fun isTouched(x : Float, y : Float) : Boolean
+    open fun render(canvas : Canvas) {
+        var bounds : Rect? = null
+        if (config.enabled) {
+            bounds = currentBounds
+            val alpha = if (isPressed) config.alpha / 3 else config.alpha
+            drawable.apply {
+                this.bounds = bounds
+                this.alpha = alpha
+                applyColorsToDrawable(this)
+                draw(canvas)
+            }
 
-    open fun onFingerDown(x : Float, y : Float) {
-        isPressed = true
+            renderCenteredText(canvas, buttonId.short!!, itemWidth.coerceAtMost(itemHeight) * 0.4f, bounds.centerX().toFloat(), bounds.centerY().toFloat(), alpha)
+
+            if (config.toggleMode) {
+                canvas.drawCircle(bounds.centerX().toFloat(), bounds.centerY().toFloat(), itemWidth.coerceAtMost(itemHeight) * 0.35f, toggleModePaint?.apply {
+                    color = config.textColor
+                    this.alpha = alpha
+                } ?: return)
+            }
+        }
+
+        // Draw a box around the button when in edit mode and it's either disabled or the alpha is too low (< 5%)
+        if (editInfo.isEditing && (!config.enabled || config.alpha < 12))
+            canvas.drawRect(bounds ?: currentBounds, disabledSelectionPaint ?: return)
     }
 
-    open fun onFingerUp(x : Float, y : Float) {
-        isPressed = false
+    abstract fun isTouched(x : Float, y : Float) : Boolean
+
+    /**
+     * @return Whether button events should be sent to guest
+     */
+    open fun onFingerDown(x : Float, y : Float) : Boolean {
+        if (!config.toggleMode || !isToggled)
+            isPressed = true
+
+        isToggled = !isToggled
+
+        return !config.toggleMode || isToggled
+    }
+
+    /**
+     * @return Whether button events should be sent to guest
+     */
+    open fun onFingerUp(x : Float, y : Float) : Boolean {
+        if (!config.toggleMode || !isToggled)
+            isPressed = false
+
+        return !isPressed
     }
 
     fun loadConfigValues() {
@@ -158,28 +210,17 @@ abstract class OnScreenButton(
         relativeY = config.relativeY
     }
 
-    /**
-     * Starts an edit session
-     * @param x The x coordinate of the initial touch
-     * @param y The y coordinate of the initial touch
-     */
-    open fun startEdit(x : Float, y : Float) {
+    fun saveConfigValues() {
+        config.relativeX = relativeX
+        config.relativeY = relativeY
+    }
+
+    override fun startMove(x : Float, y : Float) {
         editInitialTouchPoint.set(x, y)
         editInitialScale = config.scale
     }
 
-    open fun edit(x : Float, y : Float) {
-        when (editInfo.editMode) {
-            EditMode.Move -> move(x, y)
-            EditMode.Resize -> resize(x, y)
-            else -> return
-        }
-    }
-
-    /**
-     * Moves this button to the given coordinates
-     */
-    open fun move(x : Float, y : Float) {
+    override fun move(x : Float, y : Float) {
         var adjustedX = x
         var adjustedY = y
 
@@ -216,34 +257,52 @@ abstract class OnScreenButton(
         relativeY = (adjustedY - heightDiff) / adjustedHeight
     }
 
-    /**
-     * Resizes this button based on the distance of the given Y coordinate from the initial Y coordinate
-     */
-    open fun resize(x : Float, y : Float) {
-        // Invert the distance because the Y coordinate increases as you move down the screen
-        val verticalDistance = editInitialTouchPoint.y - y
-        config.scale = editInitialScale + verticalDistance / 200f
+    override fun endMove() {
+        saveConfigValues()
     }
 
     /**
-     * Ends the current edit session
+     * Returns the amount to move the button when the user presses an arrow key
+     * @param gridOffset The offset to apply to the grid size so that the button always ends up on a grid line
      */
-    open fun endEdit() {
-        config.relativeX = relativeX
-        config.relativeY = relativeY
+    private fun getMoveAmount(gridOffset : Int) : Int {
+        return if (editInfo.snapToGrid)
+            editInfo.gridSize + gridOffset
+        else
+            OnScreenEditInfo.ArrowKeyMoveAmount
     }
 
-    open fun resetRelativeValues() {
+    override fun moveUp() {
+        move(currentX, currentY - getMoveAmount(-1))
+        saveConfigValues()
+    }
+
+    override fun moveDown() {
+        move(currentX, currentY + getMoveAmount(+1))
+        saveConfigValues()
+    }
+
+    override fun moveLeft() {
+        move(currentX - getMoveAmount(-1), currentY)
+        saveConfigValues()
+    }
+
+    override fun moveRight() {
+        move(currentX + getMoveAmount(+1), currentY)
+        saveConfigValues()
+    }
+
+    override fun resetConfig() {
+        config.enabled = defaultEnabled
+        config.toggleMode = OnScreenConfiguration.DefaultToggleMode
+        config.alpha = OnScreenConfiguration.DefaultAlpha
+        config.textColor = OnScreenConfiguration.DefaultTextColor
+        config.backgroundColor = OnScreenConfiguration.DefaultBackgroundColor
+        config.scale = OnScreenConfiguration.DefaultScale
         config.relativeX = defaultRelativeX
         config.relativeY = defaultRelativeY
 
         relativeX = defaultRelativeX
         relativeY = defaultRelativeY
-    }
-
-    open fun resetConfig() {
-        resetRelativeValues()
-        config.enabled = defaultEnabled
-        config.scale = OnScreenConfiguration.DefaultScale
     }
 }

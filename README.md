@@ -1,3 +1,8 @@
+<p>
+    <h3 align="center">Development on Skyline has been ceased</h3>
+    <p align="center">All Skyline code is within this repository or <a href="https://github.com/skyline-emu/skyline-dev"><code>skyline-dev</code></a>. Anyone is free to fork the code to continue the work as long as they follow our <a href="LICENSE.md">MPL-2.0 license</a>, it should be noted that Skyline branding isn't licensed.</p>
+</p>
+
 <h1 align="center">
     <a href="https://github.com/skyline-emu/skyline" target="_blank">
         <img height="60%" width="60%" src="https://raw.github.com/skyline-emu/branding/master/banner/skyline-banner-rounded.png"><br>
@@ -15,7 +20,7 @@
 </p>
 
 <p align="center">
-    <b>Skyline</b> is an experimental emulator that runs on <b>ARMv8 Android™</b> devices and emulates the functionality of a <b>Nintendo Switch™</b> system, licensed under <a href="https://github.com/skyline-emu/skyline/blob/master/LICENSE.md"><b>Mozilla Public License 2.0</b></a>
+    <b>Skyline</b> was an experimental emulator that runs on <b>ARMv8 Android™</b> devices and emulates the functionality of a <b>Nintendo Switch™</b> system, licensed under <a href="https://github.com/skyline-emu/skyline/blob/master/LICENSE.md"><b>Mozilla Public License 2.0</b></a>
 </p>
 
 ---

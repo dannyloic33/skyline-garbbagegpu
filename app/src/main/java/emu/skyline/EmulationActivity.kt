@@ -78,7 +78,7 @@ class EmulationActivity : AppCompatActivity(), SurfaceHolder.Callback, View.OnTo
     /**
      * The built-in [Vibrator] of the device
      */
-    lateinit var builtinVibrator : Vibrator
+    private lateinit var builtinVibrator : Vibrator
 
     /**
      * A map of [Vibrator]s that correspond to [InputManager.controllers]
@@ -108,7 +108,7 @@ class EmulationActivity : AppCompatActivity(), SurfaceHolder.Callback, View.OnTo
     @Inject
     lateinit var appSettings : AppSettings
 
-    lateinit var emulationSettings : EmulationSettings
+    private lateinit var emulationSettings : EmulationSettings
 
     @Inject
     lateinit var inputManager : InputManager
@@ -337,6 +337,7 @@ class EmulationActivity : AppCompatActivity(), SurfaceHolder.Callback, View.OnTo
             setOnStickStateChangedListener(::onStickStateChanged)
             hapticFeedback = appSettings.onScreenControl && appSettings.onScreenControlFeedback
             recenterSticks = appSettings.onScreenControlRecenterSticks
+            stickRegions = appSettings.onScreenControlUseStickRegions
         }
 
         binding.onScreenControllerToggle.apply {
@@ -370,10 +371,8 @@ class EmulationActivity : AppCompatActivity(), SurfaceHolder.Callback, View.OnTo
 
     @SuppressWarnings("WeakerAccess")
     fun resumeEmulator() {
-        if (!isEmulatorPaused) return
         gameSurface?.let { setSurface(it) }
-        if (!emulationSettings.isAudioOutputDisabled)
-            changeAudioStatus(true)
+        changeAudioStatus(!emulationSettings.isAudioOutputDisabled)
         isEmulatorPaused = false
     }
 
@@ -400,6 +399,8 @@ class EmulationActivity : AppCompatActivity(), SurfaceHolder.Callback, View.OnTo
         super.onResume()
 
         resumeEmulator()
+
+        GpuDriverHelper.forceMaxGpuClocks(emulationSettings.forceMaxGpuClocks)
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
             @Suppress("DEPRECATION")
